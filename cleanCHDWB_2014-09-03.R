@@ -63,13 +63,11 @@ plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
 plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
 gen.2   <- plink.2$genotypes@.Data
 gen.3   <- plink.3$genotypes@.Data
-
-
-
-
+# Store original rownames for sample ID mapping
 names.2 <- rownames(gen.2)
 names.3 <- rownames(gen.3)
+# TODO: Mapping of sample IDs
 names.3 <- gsub(".*_", "", names.3)
 rownames(gen.2) <- map.2["sample.ID_1" %in% names.2, "ID_2"]
 #----------------------------### Write to file ###------------------------------
-
+# TODO: Write to file
