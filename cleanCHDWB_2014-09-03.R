@@ -5,6 +5,7 @@
 #--------------------------------### Setup ###----------------------------------
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/CHDWB/raw_2014-09-01"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/CHDWB/clean"
+require(snpStats)
 source("/clusterdata/uqahollo/scripts/Write.R")
 
 FixIds <- function(map) {
@@ -29,7 +30,6 @@ RemoveIncomplete <- function(map) {
   map[map == ""] <- NA
   map[complete.cases(map), ]
 }
-
 #---------------------------### Expression data ###-----------------------------
 exp.raw <- read.table(file = file.path(inpath, "chdwb_final_log2.txt"),
                        sep = "\t",
@@ -37,7 +37,6 @@ exp.raw <- read.table(file = file.path(inpath, "chdwb_final_log2.txt"),
 info    <- read.table(file = file.path(inpath, "chdwb_final_exptdes.txt"),
                        sep = "\t",
                     header = TRUE)
-
 # Read ID map files
 map.1 <- read.csv(file.path(inpath, "genotypes/batch1_IDs.csv"), header = TRUE)
 map.1 <- RemoveIncomplete(map.1)
@@ -46,23 +45,31 @@ map.2 <- RemoveIncomplete(map.2)
 map.3 <- read.csv(file.path(inpath, "genotypes/batch3_IDs.csv"), header = TRUE)
 map.3 <- RemoveIncomplete(map.3)
 # Correct formatting of IDs to match expression data
-map.3 <- FixIds(map.3)
 map.2 <- FixIds(map.2)
+map.3 <- FixIds(map.3)
 # Get all unique sample names in "GG1_######" format
 names <- unique(c(map.1$ID_3, map.2$ID_FIX, map.3$ID_FIX))
-
-batch.2 <- snpStats::read.plink(file.path(inpath, "genotypes/batch2"))
-batch.3 <- snpStats::read.plink(file.path(inpath, "genotypes/batch3"))
-gen.2   <- batch.2$genotypes@.Data
-gen.3   <- batch.3$genotypes@.Data
+# Correct expression IDs
+PROBE_ID <- exp.raw[, 2]
+exp      <- exp.raw[, -c(1:2)]
+exp.col  <- colnames(exp)
+exp.col  <- gsub("GG.*", "", exp.col)
+exp.col  <- formatC(as.numeric(exp.col), width = 6, format = "d", flag = "0")
+exp.col  <- paste0("GG1_", exp.col)
+colnames(exp) <- exp.col
+exp <- cbind(PROBE_ID, exp)
+#---------------------------### Genotype data ###-----------------------------
+plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
+plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
+gen.2   <- plink.2$genotypes@.Data
+gen.3   <- plink.3$genotypes@.Data
 
 
 
 
 names.2 <- rownames(gen.2)
-
 names.3 <- rownames(gen.3)
 names.3 <- gsub(".*_", "", names.3)
-
-
 rownames(gen.2) <- map.2["sample.ID_1" %in% names.2, "ID_2"]
+#----------------------------### Write to file ###------------------------------
+
