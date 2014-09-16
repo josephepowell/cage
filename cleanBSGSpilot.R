@@ -6,13 +6,12 @@
 require(snpStats)
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/BSGSpilot/raw"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/BSGSpilot/clean"
-
+source("/clusterdata/uqahollo/scripts/Write.R")
 #---------------------------### Expression data ###-----------------------------
 # Read raw expression data
 exp.1    <- read.csv(file.path(inpath, "Probe_signal_unnormalised_LCL_only.csv"), header = TRUE)
 exp.2    <- read.csv(file.path(inpath, "Probe_signal_unnormalised_PBMC_only.csv"), header = TRUE)
 exp.meta <- read.csv(file.path(inpath, "Probe_information.csv"), header = TRUE)
-
 #---------------------------### Phenotype data ###------------------------------
 # Read raw phenotype data
 phen.1 <- read.csv(file.path(inpath, "Sample_info_LCL_only.csv"), header = TRUE)
@@ -39,7 +38,6 @@ colnames(phen.2) <- names
 # Re-order rows by sample ID
 phen.1 <- phen.1[order(phen.1[ ,1]), ]
 phen.2 <- phen.2[order(phen.2[ ,1]), ]
-
 #----------------------------### Genotype data ###------------------------------
 labels <- c("AA", "AB", "BB")
 alleles <- c("A", "C", "G", "T")
@@ -83,7 +81,6 @@ gen.1   <- gen.res
 names   <- sapply(colnames(gen.meta.1), toupper)
 names   <- gsub("\\.", "_", names)
 colnames(gen.meta.1) <- names
-
 #---------------------------------## PBMC ##------------------------------------
 # Read raw genotype data
 gen.raw.2 <- read.plink(file.path(inpath, "cleaned_geno_pbmc.bed"))
@@ -123,7 +120,6 @@ gen.res <- cbind(RS_ID, gen.res)
 gen.2   <- gen.res
 # Correct column labelling for consistency between datasets
 colnames(gen.meta.2) <- names
-
 #---------------------### Make data entries consistent ###----------------------
 #---------------------------------## LCL ##-------------------------------------
 cols   <- which(!colnames(exp.1) %in% colnames(gen.1))
@@ -137,27 +133,22 @@ cols   <- cols[-1]
 exp.2  <- exp.2[ ,-cols]
 cols   <- cols - 1
 phen.2 <- phen.2[-cols, ]
-
 #----------------------------### Write to file ###------------------------------
-# Convenience function for easily changing output file format
-write <- function(table, filename) write.table(table, file.path(outpath, filename),
-                                               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
 if (all(colnames(exp.1)[-1] == colnames(gen.1)[-1]) &&
   all(colnames(exp.2)[-1] == colnames(gen.2)[-1]) &&
   all(colnames(exp.1)[-1] == phen.1[ ,1])         &&
   all(colnames(exp.2)[-1] == phen.2[ ,1])) {
-  write(exp.1, "BSGSpilot_expression_signals-LCL.txt")
-  write(exp.2, "BSGSpilot_expression_signals-PBMC.txt")
-  write(phen.1, "BSGSpilot_phenotypes-LCL.txt")
-  write(phen.2, "BSGSpilot_phenotypes-PBMC.txt")
-  write(gen.1, "BSGSpilot_genotypes-LCL.txt")
-  write(gen.2, "BSGSpilot_genotypes-PBMC.txt")
-  write(gen.meta.1, "BSGSpilot_genotypes-meta-LCL.txt")
-  write(gen.meta.2, "BSGSpilot_genotypes-meta-PBMC.txt")
+  Write(exp.1, "BSGSpilot_expression_signals-LCL.txt")
+  Write(exp.2, "BSGSpilot_expression_signals-PBMC.txt")
+  Write(phen.1, "BSGSpilot_phenotypes-LCL.txt")
+  Write(phen.2, "BSGSpilot_phenotypes-PBMC.txt")
+  Write(gen.1, "BSGSpilot_genotypes-LCL.txt")
+  Write(gen.2, "BSGSpilot_genotypes-PBMC.txt")
+  Write(gen.meta.1, "BSGSpilot_genotypes-meta-LCL.txt")
+  Write(gen.meta.2, "BSGSpilot_genotypes-meta-PBMC.txt")
 } else {
   print("Error: Sample labelling is inconsistent between matrices.")
 }
-
 #------------------------------### Clean up ###---------------------------------
 rm(inpath, outpath, PROBE_ID, names, gen.raw.1, gen.raw.2, gen.res, alleles,
    labels, RS_ID, SAMPLE_ID, cols, i, write)

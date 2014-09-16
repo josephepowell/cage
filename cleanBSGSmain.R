@@ -8,6 +8,7 @@ inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/BSGSmain/raw"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/BSGSmain/clean"
 # Read "raw" data
 load(file.path(inpath, "Pre_normalisation_data.Rdata"))
+source("/clusterdata/uqahollo/scripts/Write.R")
 
 #---------------------------### Expression data ###-----------------------------
 # Rename and sort existing data structures
@@ -90,18 +91,15 @@ cols  <- cols - 1
 phen  <- phen[-cols, ]
 
 #----------------------------### Write to file ###------------------------------
-# Convenience function for easily changing output file format
-write <- function(table, filename) write.table(table, file.path(outpath, filename),
-                                               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
 if (all(colnames(exp)[-1] == colnames(gen)[-1]) &&
     all(colnames(exp)[-1] == phen[ ,1])) {
-    write(exp, "BSGSmain_expression_signals.txt")
-    write(exp.meta, "BSGSmain_expression_signals-meta.txt")
-    write(exp.p, "BSGSmain_expression_signals-pval.txt")
-    write(phen, "BSGSmain_phenotypes.txt")
-    write(info, "BSGSmain_process_info.txt")
-    write(gen, "genotypes/BSGSmain_genotypes.txt")
-    write(gen.meta, "genotypes/BSGSmain_genotypes-meta.txt")
+    Write(exp, "BSGSmain_expression_signals.txt")
+    Write(exp.meta, "BSGSmain_expression_signals-meta.txt")
+    Write(exp.p, "BSGSmain_expression_signals-pval.txt")
+    Write(phen, "BSGSmain_phenotypes.txt")
+    Write(info, "BSGSmain_process_info.txt")
+    Write(gen, "genotypes/BSGSmain_genotypes.txt")
+    Write(gen.meta, "genotypes/BSGSmain_genotypes-meta.txt")
 } else {
     print("Error: Sample labelling is inconsistent between matrices.")
 }

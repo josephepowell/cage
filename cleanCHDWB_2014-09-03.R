@@ -5,6 +5,7 @@
 #--------------------------------### Setup ###----------------------------------
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/CHDWB/raw_2014-09-01"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/CHDWB/clean"
+source("/clusterdata/uqahollo/scripts/Write.R")
 
 FixIds <- function(map) {
   # Correct formatting of "GG_####" sample IDs found in the ID map files to 

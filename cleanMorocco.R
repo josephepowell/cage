@@ -5,7 +5,7 @@
 #--------------------------------### Setup ###----------------------------------
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/Morocco/raw"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/Morocco/clean"
-
+source("/clusterdata/uqahollo/scripts/Write.R")
 #---------------------------### Expression data ###-----------------------------
 # Read raw expression data
 exp.raw  <- read.delim(file.path(inpath, "Group_Probe_Profile_Gibson_1-3_11-12-08.txt"), sep = "\t", fill = TRUE)
@@ -70,14 +70,10 @@ map <- cbind(rep("0", nrow(gen)), # missing chromosomes
 #              alleles)
 
 #----------------------------### Write to file ###------------------------------
-# Convenience function for easily changing output file format
-write <- function(table, filename) write.table(table, file.path(outpath, filename),
-                                               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
-
 if (all(colnames(exp)[-1] == colnames(gen)[-1])) {
-  write(exp, "Morocco_expression_signals.txt")
-  write(exp.info, "Morocco_probe_info.txt")
-  write(gen, "genotypes/Morocco_genotypes.txt")
+  Write(exp, "Morocco_expression_signals.txt")
+  Write(exp.info, "Morocco_probe_info.txt")
+  Write(gen, "genotypes/Morocco_genotypes.txt")
   write.table(ped, paste(outpath, "/genotypes/Morocco.ped", sep = ""), sep = "\t", eol = "\n",
               quote = FALSE, row.names = FALSE, col.names = FALSE)
   write.table(map, paste(outpath, "/genotypes/Morocco.map", sep = ""), sep = "\t", eol = "\n",
