@@ -57,6 +57,8 @@ gen <- gen[rownames(map), ]
 phen <- read.table(file = file.path(inpath, "Cardiology_exptdes_bothphases.txt"),
                     sep = "\t",
                  header = TRUE)
+# TODO: remove unnecessary columns
+# TODO: re-label columns for consistency across datasets
 
 #------------------------------### Cleanup ###----------------------------------
 names <- gen.id[which(gen.id %in% exp.id)]
