@@ -5,6 +5,7 @@
 #--------------------------------### Setup ###----------------------------------
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/CAD/raw"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/CAD/clean"
+require(snpStats)
 
 PadWithZeroes <- function(id) {
   # Pad the numeric portion of sample IDs with zeroes, to five characters.
@@ -35,16 +36,13 @@ exp.id <- colnames(exp.1)
 exp.id <- gsub("X[0-9]*_|\\.[A-z]*", "", exp.id)
 exp.id <- sapply(exp.id, PadWithZeroes)
 colnames(exp.1) <- exp.id
-
-phen <- read.table(file.path(inpath, "Cardiology_exptdes_bothphases.txt"), sep = "\t", header = TRUE)
-
-# Extract STUDY_ID from genotype data
-gen.plink <- snpStats::read.plink("/ibscratch/wrayvisscher/xander/CAGE/data/CAD/clean/CAD")
+#---------------------------### Genotype data ###-------------------------------
+gen.plink <- read.plink("/ibscratch/wrayvisscher/xander/CAGE/data/CAD/clean/CAD")
 gen <- t(gen.plink$genotypes@.Data)
+# Extract STUDY_ID from genotype data
 gen.id <- gsub("X[0-9]*_|_C", "", colnames(gen))
 gen.id <- sapply(gen.id, PadWithZeroes)
 colnames(gen) <- gen.id
-
 # re-label FAM matrix
 fam <- gen.plink$fam
 fam <- fam[order(rownames(fam)), ]
@@ -55,15 +53,20 @@ fam$member    <- gen.id
 map <- gen.plink$map
 map <- map[which(complete.cases(map[, 5:6])), ]
 gen <- gen[rownames(map), ]
+#------------------------------### Covariates ###-------------------------------
+phen <- read.table(file = file.path(inpath, "Cardiology_exptdes_bothphases.txt"),
+                    sep = "\t",
+                 header = TRUE)
 
+#------------------------------### Cleanup ###----------------------------------
 names <- gen.id[which(gen.id %in% exp.id)]
-exp.1 <- exp.1[, names]
+exp.1 <- exp.1[, names]           # only keep samples found in exp and gen data
 gen   <- gen[, names]
-# Append probe IDs
-exp.1 <- cbind(PROBE_ID, exp.1)
-
+exp.1 <- cbind(PROBE_ID, exp.1)   # append probe IDs
+gen   <- new("SnpMatrix", t(gen)) # create SnpMatrix object for output
 #----------------------------### Write to file ###------------------------------
 write.table(exp.1, file.path(outpath, "CAD_exp.txt"), sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
+write.table(phen, file.path(outpath, "CAD_cov.txt"), sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
 
 write.plink(file.base = file.path(outpath, "CAD"),
             snp.major = TRUE,
