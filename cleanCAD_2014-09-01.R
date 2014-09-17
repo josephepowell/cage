@@ -6,6 +6,7 @@
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/CAD/raw"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/CAD/clean"
 require(snpStats)
+source("/clusterdata/uqahollo/scripts/Write.R")
 
 PadWithZeroes <- function(id) {
   # Pad the numeric portion of sample IDs with zeroes, to five characters.
@@ -59,7 +60,6 @@ phen <- read.table(file = file.path(inpath, "Cardiology_exptdes_bothphases.txt")
                  header = TRUE)
 # TODO: remove unnecessary columns
 # TODO: re-label columns for consistency across datasets
-
 #------------------------------### Cleanup ###----------------------------------
 names <- gen.id[which(gen.id %in% exp.id)]
 exp.1 <- exp.1[, names]           # only keep samples found in exp and gen data
@@ -67,8 +67,8 @@ gen   <- gen[, names]
 exp.1 <- cbind(PROBE_ID, exp.1)   # append probe IDs
 gen   <- new("SnpMatrix", t(gen)) # create SnpMatrix object for output
 #----------------------------### Write to file ###------------------------------
-write.table(exp.1, file.path(outpath, "CAD_exp.txt"), sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
-write.table(phen, file.path(outpath, "CAD_cov.txt"), sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE)
+Write(exp.1, file.path(outpath, "CAD_exp.txt"))
+Write(phen, file.path(outpath, "CAD_cov.txt"))
 
 write.plink(file.base = file.path(outpath, "CAD"),
             snp.major = TRUE,
