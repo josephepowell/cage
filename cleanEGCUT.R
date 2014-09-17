@@ -39,11 +39,14 @@ names <- unique( c(rownames(plink.1$genotypes), rownames(plink.2$genotypes)) )
 exp   <- exp[, names]
 exp   <- cbind(PROBE_ID, exp)
 
-# TODO: Handle duplication of SNPs between genotype runs
-# gen.1$ID <- rownames(gen.1)
-# gen.2$ID <- rownames(gen.2)
-# gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
-# TODO: Handle missingness of differing SNPs between genotype runs
+gen.1$ID <- rownames(gen.1)
+gen.2$ID <- rownames(gen.2)
+gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
+rownames(gen) <- gen$ID
+# TODO: Set rownames to ID
+# TODO: Strip ID row and column
+# TODO: Re-order rows
+# TODO: Re-order columns
 #----------------------------### Write to file ###------------------------------
 Write(exp, "EGCUT_expression_signals.txt")
 write.plink(file.base = file.path(outpath, "EGCUT-CNV"),
