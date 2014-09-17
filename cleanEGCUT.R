@@ -43,8 +43,8 @@ names.1 <- rownames(gen.1)
 names.2 <- rownames(gen.2)
 gen.1 <- apply(gen.1, 2, as.numeric)
 gen.2 <- apply(gen.2, 2, as.numeric)
-gen.1 <- data.frame(ID = rownames(gen.1), gen.1)
-gen.2 <- data.frame(ID = rownames(gen.2), gen.2)
+gen.1 <- data.frame(ID = names.1, gen.1)
+gen.2 <- data.frame(ID = names.2, gen.2)
 gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
 rownames(gen) <- gen$ID
 # Strip ID row and column
