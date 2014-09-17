@@ -55,11 +55,15 @@ names <- unique(c(map.1$ID_3, map.2$ID_FIX, map.3$ID_FIX))
 PROBE_ID <- exp.raw[, 2]
 exp      <- exp.raw[, -c(1:2)]
 # TODO: Correct expression mapping using `map.new` IDs
-exp.col  <- colnames(exp)
-exp.col  <- gsub("GG.*_", "", exp.col)
-exp.col  <- formatC(as.numeric(exp.col), width = 6, format = "d", flag = "0")
-exp.col  <- paste0("GG1_", exp.col)
+exp      <- exp[, which(colnames(exp) %in% map.new$Sample)]
+exp.col  <- map.new[which(map.new$Sample %in% colnames(exp)),1]
 colnames(exp) <- exp.col
+exp      <- cbind(PROBE_ID, exp)
+#exp.col  <- colnames(exp)
+#exp.col  <- gsub("GG.*_", "", exp.col)
+#exp.col  <- formatC(as.numeric(exp.col), width = 6, format = "d", flag = "0")
+#exp.col  <- paste0("GG1_", exp.col)
+#colnames(exp) <- exp.col
 exp <- cbind(PROBE_ID, exp)
 #---------------------------### Genotype data ###-----------------------------
 plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
