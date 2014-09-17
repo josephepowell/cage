@@ -44,6 +44,8 @@ map.2 <- read.csv(file.path(inpath, "genotypes/batch2_IDs.csv"), header = TRUE)
 map.2 <- RemoveIncomplete(map.2)
 map.3 <- read.csv(file.path(inpath, "genotypes/batch3_IDs.csv"), header = TRUE)
 map.3 <- RemoveIncomplete(map.3)
+# Complete ID map resolves all ID associations
+map.new <- read.csv(file.path(inpath, "chdwb_all_design.csv"), header = TRUE)
 # Correct formatting of IDs to match expression data
 map.2 <- FixIds(map.2)
 map.3 <- FixIds(map.3)
@@ -52,6 +54,7 @@ names <- unique(c(map.1$ID_3, map.2$ID_FIX, map.3$ID_FIX))
 # Correct expression IDs
 PROBE_ID <- exp.raw[, 2]
 exp      <- exp.raw[, -c(1:2)]
+# TODO: Correct expression mapping using `map.new` IDs
 exp.col  <- colnames(exp)
 exp.col  <- gsub("GG.*_", "", exp.col)
 exp.col  <- formatC(as.numeric(exp.col), width = 6, format = "d", flag = "0")
@@ -63,11 +66,14 @@ plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
 plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
 gen.2   <- plink.2$genotypes@.Data
 gen.3   <- plink.3$genotypes@.Data
+# TODO: Phase 2 genotypes from Greg
+# TODO: Rectify sample retention according to `map.new` IDs
+
 # Store original rownames for sample ID mapping
 names.2 <- rownames(gen.2)
 names.3 <- rownames(gen.3)
 # TODO: Mapping of sample IDs
 names.3 <- gsub(".*_", "", names.3)
-rownames(gen.2) <- map.2["sample.ID_1" %in% names.2, "ID_2"]
+# rownames(gen.2) <- map.2["sample.ID_1" %in% names.2, "ID_2"]
 #----------------------------### Write to file ###------------------------------
 # TODO: Write to file
