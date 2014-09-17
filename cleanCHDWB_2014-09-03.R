@@ -54,7 +54,6 @@ names <- unique(c(map.1$ID_3, map.2$ID_FIX, map.3$ID_FIX))
 # Correct expression IDs
 PROBE_ID <- exp.raw[, 2]
 exp      <- exp.raw[, -c(1:2)]
-# TODO: Correct expression mapping using `map.new` IDs
 exp      <- exp[, which(colnames(exp) %in% map.new$Sample)]
 exp.col  <- map.new[which(map.new$Sample %in% colnames(exp)),1]
 colnames(exp) <- exp.col
