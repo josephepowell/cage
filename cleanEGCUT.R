@@ -38,13 +38,17 @@ fam.2   <- plink.2$fam
 names <- unique( c(rownames(plink.1$genotypes), rownames(plink.2$genotypes)) )
 exp   <- exp[, names]
 exp   <- cbind(PROBE_ID, exp)
-
-gen.1$ID <- rownames(gen.1)
-gen.2$ID <- rownames(gen.2)
+# Perform outer join on genotype matrices, favouring Omni genotypes
+names.1 <- rownames(gen.1)
+names.2 <- rownames(gen.2)
+gen.1 <- apply(gen.1, 2, as.numeric)
+gen.2 <- apply(gen.2, 2, as.numeric)
+gen.1 <- data.frame(ID = rownames(gen.1), gen.1)
+gen.2 <- data.frame(ID = rownames(gen.2), gen.2)
 gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
 rownames(gen) <- gen$ID
-# TODO: Set rownames to ID
-# TODO: Strip ID row and column
+# Strip ID row and column
+gen <- gen[!rownames(gen) %in% "ID",!colnames(gen) %in% "ID"]
 # TODO: Re-order rows
 # TODO: Re-order columns
 #----------------------------### Write to file ###------------------------------
