@@ -58,19 +58,21 @@ exp      <- exp[, which(colnames(exp) %in% map.new$Sample)]
 exp.col  <- map.new[which(map.new$Sample %in% colnames(exp)),1]
 colnames(exp) <- exp.col
 exp      <- cbind(PROBE_ID, exp)
-#exp.col  <- colnames(exp)
-#exp.col  <- gsub("GG.*_", "", exp.col)
-#exp.col  <- formatC(as.numeric(exp.col), width = 6, format = "d", flag = "0")
-#exp.col  <- paste0("GG1_", exp.col)
-#colnames(exp) <- exp.col
-exp <- cbind(PROBE_ID, exp)
 #---------------------------### Genotype data ###-----------------------------
 plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
 plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
 gen.2   <- plink.2$genotypes@.Data
 gen.3   <- plink.3$genotypes@.Data
-# TODO: Phase 2 genotypes from Greg
 # TODO: Rectify sample retention according to `map.new` IDs
+# TODO: Retain both GG1_###### and GG2_#### IDs for `map.new`
+gen.2   <- gen.2[which(rownames(gen.2) %in% map.2$sample.ID_1), ]
+rownames(gen.2) <- map.2[which(map.2$sample.ID_1 %in% rownames(gen.2)),"ID_FIX"]
+gen.2   <- gen.2[which(rownames(gen.2) %in% map.new$Sample), ]
+rownames(gen.2) <- map.new[which(map.new$Sample %in% rownames(gen.2)),"CHD_ID"]
+
+
+
+
 
 # Store original rownames for sample ID mapping
 names.2 <- rownames(gen.2)
