@@ -14,8 +14,8 @@ FixId <- function(id) {
   # format IDs are left intact.
   #   id: the ID number to process.
   # Returns: ID number either in GG2_####, or GG1_###### (unchanged) format.
-  id <- map.2[map.2 == id,3]
-  if (grepl("GG_", id)) {
+#  id <- map.2[map.2 == id,3]
+  if (grepl("GG_", id)[1]) {
     id <- gsub("GG_", "GG2_", id)
   }
   id
@@ -59,6 +59,7 @@ map.3 <- read.csv(file.path(inpath, "genotypes/batch3_IDs.csv"), header = TRUE)
 map.3 <- RemoveIncomplete(map.3)
 # Complete ID map resolves all ID associations
 map.new <- read.csv(file.path(inpath, "chdwb_all_design.csv"), header = TRUE)
+map.new$Sample <- gsub("GG2-", "GG2_", map.new$Sample)
 # Correct formatting of IDs to match expression data
 map.2 <- FixIds(map.2)
 map.3 <- FixIds(map.3)
@@ -75,7 +76,16 @@ exp      <- cbind(PROBE_ID, exp)
 plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
 plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
 gen.2   <- plink.2$genotypes@.Data
+gen.2   <- gen.2[which(rownames(gen.2) %in% map.2$sample.ID_1), ]
 gen.3   <- plink.3$genotypes@.Data
+# Map genotype sample IDs to `map.new` IDs
+names.2 <- map.2[which(map.2$sample.ID_1 %in% rownames(gen.2)),"ID_3"]
+names.3 <- map.3[which(map.3$sample.ID_1 %in% rownames(gen.3)),"ID_3"]
+names.2 <- sapply(names.2, FixId)
+names.3 <- sapply(names.3, FixId)
+# Set row names with Sample IDs
+rownames(gen.2) <- names.2
+rownames(gen.3) <- names.3
 # TODO: Rectify sample retention according to `map.new` IDs
 # TODO: Retain both GG1_###### and GG2_#### IDs for `map.new`
 gen.2   <- gen.2[which(rownames(gen.2) %in% map.2$sample.ID_1), ]
