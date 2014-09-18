@@ -8,6 +8,19 @@ outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/CHDWB/clean"
 require(snpStats)
 source("/clusterdata/uqahollo/scripts/Write.R")
 
+FixId <- function(id) {
+  # Correct formatting of GG_#### sample IDs found in the batch 2 and 3 ID map
+  # files to match GG2_####, as found in the full study design map. GG1_######
+  # format IDs are left intact.
+  #   id: the ID number to process.
+  # Returns: ID number either in GG2_####, or GG1_###### (unchanged) format.
+  id <- map.2[map.2 == id,3]
+  if (grepl("GG_", id)) {
+    id <- gsub("GG_", "GG2_", id)
+  }
+  id
+}
+
 FixIds <- function(map) {
   # Correct formatting of "GG_####" sample IDs found in the ID map files to 
   # match "GG1_######" sample IDs found in expression data.
