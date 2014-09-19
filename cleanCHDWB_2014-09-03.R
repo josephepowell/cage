@@ -14,7 +14,6 @@ FixId <- function(id) {
   # format IDs are left intact.
   #   id: the ID number to process.
   # Returns: ID number either in GG2_####, or GG1_###### (unchanged) format.
-#  id <- map.2[map.2 == id,3]
   if (grepl("GG_", id)[1]) {
     id <- gsub("GG_", "GG2_", id)
   }
@@ -59,7 +58,7 @@ map.3 <- read.csv(file.path(inpath, "genotypes/batch3_IDs.csv"), header = TRUE)
 map.3 <- RemoveIncomplete(map.3)
 # Complete ID map resolves all ID associations
 map.new <- read.csv(file.path(inpath, "chdwb_all_design.csv"), header = TRUE)
-map.new$Sample <- gsub("GG2-", "GG2_", map.new$Sample)
+map.new$Sample <- gsub("GG2-", "GG2_", map.new$Sample) # subtle difference in ID
 # Correct formatting of IDs to match expression data
 map.2 <- FixIds(map.2)
 map.3 <- FixIds(map.3)
@@ -86,22 +85,18 @@ names.3 <- sapply(names.3, FixId)
 # Set row names with Sample IDs
 rownames(gen.2) <- names.2
 rownames(gen.3) <- names.3
-# TODO: Rectify sample retention according to `map.new` IDs
-# TODO: Retain both GG1_###### and GG2_#### IDs for `map.new`
-gen.2   <- gen.2[which(rownames(gen.2) %in% map.2$sample.ID_1), ]
-rownames(gen.2) <- map.2[which(map.2$sample.ID_1 %in% rownames(gen.2)),"ID_FIX"]
-gen.2   <- gen.2[which(rownames(gen.2) %in% map.new$Sample), ]
-rownames(gen.2) <- map.new[which(map.new$Sample %in% rownames(gen.2)),"CHD_ID"]
-
-
-
-
-
-# Store original rownames for sample ID mapping
-names.2 <- rownames(gen.2)
-names.3 <- rownames(gen.3)
-# TODO: Mapping of sample IDs
-names.3 <- gsub(".*_", "", names.3)
-# rownames(gen.2) <- map.2["sample.ID_1" %in% names.2, "ID_2"]
+# TODO: Merge genotypes or write two batches?
+# TODO: Strip FAM to match batch 2
+# TODO: Strip FAM to match batch 3
 #----------------------------### Write to file ###------------------------------
-# TODO: Write to file
+Write(exp, "CHDWB_exp.txt")
+write.plink(file.base = file.path(outpath, "CHDWB_phase1"),
+            snp.major = TRUE,
+                 snps = gen.2,
+         subject.data = fam.2,
+             snp.data = plink.2$map)
+write.plink(file.base = file.path(outpath, "CHDWB_phase2"),
+            snp.major = TRUE,
+                 snps = gen.3,
+         subject.data = fam.3,
+             snp.data = plink.3$map)
