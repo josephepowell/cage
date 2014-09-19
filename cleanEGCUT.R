@@ -53,6 +53,7 @@ gen <- gen[!rownames(gen) %in% "ID",!colnames(gen) %in% "ID"]
 #gen <- gen[, order(colnames(gen))] # up the contiguous blocks of missing values
 # TODO: Merge fam tables
 # TODO: Merge map tables
+# TODO: Map probe IDs to ILMN_ID
 #----------------------------### Write to file ###------------------------------
 Write(exp, "EGCUT_expression_signals.txt")
 write.plink(file.base = 
