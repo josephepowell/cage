@@ -49,10 +49,14 @@ gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
 rownames(gen) <- gen$ID
 # Strip ID row and column
 gen <- gen[!rownames(gen) %in% "ID",!colnames(gen) %in% "ID"]
-# TODO: Re-order rows
-# TODO: Re-order columns
+#gen <- gen[order(rownames(gen)), ] # Sorting is undesirable because it breaks
+#gen <- gen[, order(colnames(gen))] # up the contiguous blocks of missing values
+# TODO: Merge fam tables
+# TODO: Merge map tables
 #----------------------------### Write to file ###------------------------------
 Write(exp, "EGCUT_expression_signals.txt")
+write.plink(file.base = 
+
 write.plink(file.base = file.path(outpath, "EGCUT-CNV"),
             snp.major = TRUE,
                  snps = plink.1$genotypes,
