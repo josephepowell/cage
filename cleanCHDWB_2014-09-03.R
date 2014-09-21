@@ -82,12 +82,26 @@ names.2 <- map.2[which(map.2$sample.ID_1 %in% rownames(gen.2)),"ID_3"]
 names.3 <- map.3[which(map.3$sample.ID_1 %in% rownames(gen.3)),"ID_3"]
 names.2 <- sapply(names.2, FixId)
 names.3 <- sapply(names.3, FixId)
+names.2 <- map.new[which(map.new$Sample %in% names.2),"CHD_ID"]
+names.3 <- map.new[which(map.new$Sample %in% names.3),"CHD_ID"]
 # Set row names with Sample IDs
 rownames(gen.2) <- names.2
 rownames(gen.3) <- names.3
+# Create SnpMartix objects
+gen.2 <- new("SnpMatrix", gen.2)
+gen.3 <- new("SnpMatrix", gen.3)
 # TODO: Merge genotypes or write two batches?
-# TODO: Strip FAM to match batch 2
-# TODO: Strip FAM to match batch 3
+# Label batch 2 sample data
+fam.2 <- plink.2$fam
+fam.2 <- fam.2[which(rownames(fam.2) %in% map.2$sample.ID_1), ]
+fam.2$pedigree  <- names.2
+fam.2$member    <- names.2
+rownames(fam.2) <- names.2
+# Label batch 3 sample data
+fam.3 <- plink.3$fam
+fam.3$pedigree  <- names.3
+fam.3$member    <- names.3
+rownames(fam.3) <- names.3
 #----------------------------### Write to file ###------------------------------
 Write(exp, "CHDWB_exp.txt")
 write.plink(file.base = file.path(outpath, "CHDWB_phase1"),
