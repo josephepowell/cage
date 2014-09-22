@@ -40,9 +40,9 @@ exp   <- exp[, names]
 exp   <- cbind(PROBE_ID, exp)
 # TODO: Map probe IDs to ILMN_ID
 ill.path <- "/ibscratch/wrayvisscher/xander/CAGE/annotation/humanht-12_v3_0_r3_11283641_a_txt.zip"
-ill.anno <- read.delim(pipe(paste0("gunzip -c ", annotation)),
+ill.anno <- read.delim(pipe(paste0("gunzip -c ", ill.path)),
                        skip = 8, header = TRUE)
-ill.ids  <- ill.anno[which(ill$Array_Address_Id %in% exp$PROBE_ID),"Probe_Id"]
+ill.ids  <- ill.anno[which(ill.anno$Array_Address_Id %in% exp$PROBE_ID),"Probe_Id"]
 exp$PROBE_ID <- ill.ids
 #-------------------------------------------------------------------------------
 # Perform outer join on genotype matrices, favouring Omni genotypes
@@ -65,14 +65,13 @@ exp$PROBE_ID <- ill.ids
 gen.1 <- new("SnpMatrix", gen.1)
 gen.2 <- new("SnpMatrix", gen.2)
 #----------------------------### Write to file ###------------------------------
-Write(exp, "EGCUT_expression_signals.txt")
-write.plink(file.base = file.path(outpath, "EGCUT_CNV"),
+Write(exp, "EGCUT_exp.txt")
+write.plink(file.base = file.path(outpath, "genotypes/EGCUT_CNV"),
             snp.major = TRUE,
                  snps = gen.1,
          subject.data = fam.1,
              snp.data = plink.1$map)
-
-write.plink(file.base = file.path(outpath, "EGCUT_Omni"),
+write.plink(file.base = file.path(outpath, "genotypes/EGCUT_Omni"),
             snp.major = TRUE,
                  snps = gen.2,
          subject.data = fam.2,
