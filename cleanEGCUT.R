@@ -36,36 +36,36 @@ fam.2   <- plink.2$fam
 
 # Remove expression data for samples with no genotypes
 names <- unique( c(rownames(plink.1$genotypes), rownames(plink.2$genotypes)) )
+names <- names[which(names %in% colnames(exp))]
 exp   <- exp[, names]
 exp   <- cbind(PROBE_ID, exp)
+#-------------------------------------------------------------------------------
 # Perform outer join on genotype matrices, favouring Omni genotypes
-names.1 <- rownames(gen.1)
-names.2 <- rownames(gen.2)
-gen.1 <- apply(gen.1, 2, as.numeric)
-gen.2 <- apply(gen.2, 2, as.numeric)
-gen.1 <- data.frame(ID = names.1, gen.1)
-gen.2 <- data.frame(ID = names.2, gen.2)
-gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
-rownames(gen) <- gen$ID
+# names.1 <- rownames(gen.1)
+# names.2 <- rownames(gen.2)
+# gen.1 <- apply(gen.1, 2, as.numeric)
+# gen.2 <- apply(gen.2, 2, as.numeric)
+# gen.1 <- data.frame(ID = names.1, gen.1)
+# gen.2 <- data.frame(ID = names.2, gen.2)
+# gen <- plyr::join(gen.2, gen.1, type = "full", by = "ID")
+# rownames(gen) <- gen$ID
 # Strip ID row and column
-gen <- gen[!rownames(gen) %in% "ID",!colnames(gen) %in% "ID"]
-#gen <- gen[order(rownames(gen)), ] # Sorting is undesirable because it breaks
-#gen <- gen[, order(colnames(gen))] # up the contiguous blocks of missing values
+# gen <- gen[!rownames(gen) %in% "ID",!colnames(gen) %in% "ID"]
+# gen <- gen[order(rownames(gen)), ] # Sorting is undesirable because it breaks
+# gen <- gen[, order(colnames(gen))] # up the contiguous blocks of missing values
 # TODO: Merge fam tables
 # TODO: Merge map tables
 # TODO: Map probe IDs to ILMN_ID
 #----------------------------### Write to file ###------------------------------
 Write(exp, "EGCUT_expression_signals.txt")
-write.plink(file.base = 
-
-write.plink(file.base = file.path(outpath, "EGCUT-CNV"),
+write.plink(file.base = file.path(outpath, "EGCUT_CNV"),
             snp.major = TRUE,
-                 snps = plink.1$genotypes,
-         subject.data = plink.1$fam,
+                 snps = gen.1,
+         subject.data = fam.1,
              snp.data = plink.1$map)
 
-write.plink(file.base = file.path(outpath, "EGCUT-Omni"),
+write.plink(file.base = file.path(outpath, "EGCUT_Omni"),
             snp.major = TRUE,
-                 snps = plink.2$genotypes,
-         subject.data = plink.2$fam,
+                 snps = gen.2,
+         subject.data = fam.2,
              snp.data = plink.2$map)
