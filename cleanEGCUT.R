@@ -38,9 +38,12 @@ names <- unique( c(rownames(plink.1$genotypes), rownames(plink.2$genotypes)) )
 names <- names[which(names %in% colnames(exp))]
 exp   <- exp[, names]
 exp   <- cbind(PROBE_ID, exp)
-# Create `SnpMatrix` objects
-gen.1 <- new("SnpMatrix", gen.1)
-gen.2 <- new("SnpMatrix", gen.2)
+# TODO: Map probe IDs to ILMN_ID
+ill.path <- "/ibscratch/wrayvisscher/xander/CAGE/annotation/humanht-12_v3_0_r3_11283641_a_txt.zip"
+ill.anno <- read.delim(pipe(paste0("gunzip -c ", annotation)),
+                       skip = 8, header = TRUE)
+ill.ids  <- ill.anno[which(ill$Array_Address_Id %in% exp$PROBE_ID),"Probe_Id"]
+exp$PROBE_ID <- ill.ids
 #-------------------------------------------------------------------------------
 # Perform outer join on genotype matrices, favouring Omni genotypes
 # names.1 <- rownames(gen.1)
@@ -57,7 +60,10 @@ gen.2 <- new("SnpMatrix", gen.2)
 # gen <- gen[, order(colnames(gen))] # up the contiguous blocks of missing values
 # TODO: Merge fam tables
 # TODO: Merge map tables
-# TODO: Map probe IDs to ILMN_ID
+#-------------------------------------------------------------------------------
+# Create `SnpMatrix` objects
+gen.1 <- new("SnpMatrix", gen.1)
+gen.2 <- new("SnpMatrix", gen.2)
 #----------------------------### Write to file ###------------------------------
 Write(exp, "EGCUT_expression_signals.txt")
 write.plink(file.base = file.path(outpath, "EGCUT_CNV"),
