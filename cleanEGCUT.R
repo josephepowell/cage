@@ -33,12 +33,14 @@ fam.1   <- fam.1[rownames(gen.1), ]
 plink.2 <- read.plink(file.path(inpath, "EGCUT_OmniX_ExpSample_290814"))
 gen.2   <- plink.2$genotypes@.Data
 fam.2   <- plink.2$fam
-
 # Remove expression data for samples with no genotypes
 names <- unique( c(rownames(plink.1$genotypes), rownames(plink.2$genotypes)) )
 names <- names[which(names %in% colnames(exp))]
 exp   <- exp[, names]
 exp   <- cbind(PROBE_ID, exp)
+# Create `SnpMatrix` objects
+gen.1 <- new("SnpMatrix", gen.1)
+gen.2 <- new("SnpMatrix", gen.2)
 #-------------------------------------------------------------------------------
 # Perform outer join on genotype matrices, favouring Omni genotypes
 # names.1 <- rownames(gen.1)
