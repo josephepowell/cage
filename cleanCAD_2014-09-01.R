@@ -29,9 +29,10 @@ exp.raw.2 <- read.table(file = file.path(inpath, "Cardiology_phase2_raw.txt"),
 # Extract probe info from phase 1 matrix
 PROBE_ID   <- exp.raw.1[, 1]
 exp.1      <- exp.raw.1[, order(colnames(exp.raw.1))]
-exp.info.1 <- exp.1[, 1:10]
+info.probe <- exp.1[, 1:10]
 exp.1      <- exp.1[, -c(1:11)] # strip probe info
-
+# TODO: check mapping of phase 2 IDs with CHDWB data
+# TODO: merge of expression data(???)
 # Extract STUDY_ID from phase 1 expression data
 exp.id <- colnames(exp.1)
 exp.id <- gsub("X[0-9]*_|\\.[A-z]*", "", exp.id)
@@ -55,9 +56,9 @@ map <- gen.plink$map
 map <- map[which(complete.cases(map[, 5:6])), ]
 gen <- gen[rownames(map), ]
 #------------------------------### Covariates ###-------------------------------
-phen <- read.table(file = file.path(inpath, "Cardiology_exptdes_bothphases.txt"),
+cov <- read.table(file = file.path(inpath, "Cardiology_exptdes_bothphases.txt"),
                     sep = "\t",
-                 header = TRUE)
+                 header = TRUE
 # TODO: remove unnecessary columns
 # TODO: re-label columns for consistency across datasets
 #------------------------------### Cleanup ###----------------------------------
@@ -67,10 +68,10 @@ gen   <- gen[, names]
 exp.1 <- cbind(PROBE_ID, exp.1)   # append probe IDs
 gen   <- new("SnpMatrix", t(gen)) # create SnpMatrix object for output
 #----------------------------### Write to file ###------------------------------
-Write(exp.1, file.path(outpath, "CAD_exp.txt"))
-Write(phen, file.path(outpath, "CAD_cov.txt"))
-
-write.plink(file.base = file.path(outpath, "CAD"),
+Write(exp.1, "CAD_exp.txt")
+Write(cov,  "CAD_cov.txt")
+Write(info.probe, "CAD_probe_info.txt")
+write.plink(file.base = file.path(outpath, "genotypes/CAD"),
             snp.major = TRUE,
                  snps = gen,
          subject.data = fam,
