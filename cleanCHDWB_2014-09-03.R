@@ -81,9 +81,10 @@ cov <- read.csv(file = file.path(inpath, "sample_info_CHDWB.csv"),
               header = TRUE)
 col <- grep("CHDWB", names(cov)) # move sample ID to first column
 cov <- cov[, c(col, (1:ncol(cov))[-col])]
+# TODO: split column names with underscores
 colnames(cov) <- c("SAMPLE_ID", toupper(colnames(cov)[-1]))
 cov$SAMPLE_ID <- gsub("WB", "", cov$SAMPLE_ID)
-cov <- cov[which(cov$SAMPLE_ID %in% exp$SAMPLE_ID), ]
+cov <- cov[which(cov$SAMPLE_ID %in% colnames(exp)), ]
 # probe info
 probe <- read.table(file = file.path(inpath, "CHDWB_probe_info.txt"),
                      sep = "\t",
@@ -108,7 +109,6 @@ rownames(gen.3) <- names.3
 # Create SnpMartix objects
 gen.2 <- new("SnpMatrix", gen.2)
 gen.3 <- new("SnpMatrix", gen.3)
-# TODO: Merge genotypes or write two batches?
 # Label batch 2 sample data
 fam.2 <- plink.2$fam
 fam.2 <- fam.2[which(rownames(fam.2) %in% map.2$sample.ID_1), ]
@@ -125,12 +125,12 @@ Write(exp, "CHDWB_exp-log2.txt")
 Write(cov, "CHDWB_cov.txt")
 Write(info, "CHDWB_sample_info.txt")
 Write(probe, "CHDWB_probe_info.txt")
-write.plink(file.base = file.path(outpath, "CHDWB_batch2"),
+write.plink(file.base = file.path(outpath, "genotypes/CHDWB_batch2"),
             snp.major = TRUE,
                  snps = gen.2,
          subject.data = fam.2,
              snp.data = plink.2$map)
-write.plink(file.base = file.path(outpath, "CHDWB_batch3"),
+write.plink(file.base = file.path(outpath, "genotypes/CHDWB_batch3"),
             snp.major = TRUE,
                  snps = gen.3,
          subject.data = fam.3,
