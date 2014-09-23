@@ -70,17 +70,23 @@ exp.col  <- map.new[which(map.new$Sample %in% colnames(exp)),1]
 colnames(exp) <- exp.col
 exp      <- cbind(PROBE_ID, exp)
 #------------------------------### Metadata ###-------------------------------
+# sample info
 info    <- read.table(file = file.path(inpath, "chdwb_final_exptdes.txt"),
                        sep = "\t",
                     header = TRUE)
 info$ColumnName <- map.new$CHD_ID
 colnames(info)  <- c("SAMPLE_ID", toupper(colnames(info)[-1]))
+# covariates
 cov <- read.csv(file = file.path(inpath, "sample_info_CHDWB.csv"),
               header = TRUE)
-# move sample ID to first column
-col <- grep("CHDWB", names(cov))
+col <- grep("CHDWB", names(cov)) # move sample ID to first column
 cov <- cov[, c(col, (1:ncol(cov))[-col])]
 colnames(cov) <- c("SAMPLE_ID", toupper(colnames(cov)[-1]))
+# probe info
+probe <- read.table(file = file.path(inpath, "CHDWB_probe_info.txt"),
+                     sep = "\t",
+                  header = TRUE)
+probe <- probe[which(probe$PROBE_ID %in% exp$PROBE_ID), ] # strip to match exp
 #---------------------------### Genotype data ###-----------------------------
 plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
 plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
@@ -114,8 +120,9 @@ fam.3$member    <- names.3
 rownames(fam.3) <- names.3
 #----------------------------### Write to file ###------------------------------
 Write(exp, "CHDWB_exp-log2.txt")
-Write(info, "CHDWB_sample_info.txt")
 Write(cov, "CHDWB_cov.txt")
+Write(info, "CHDWB_sample_info.txt")
+Write(probe, "CHDWB_probe_info.txt")
 write.plink(file.base = file.path(outpath, "CHDWB_batch2"),
             snp.major = TRUE,
                  snps = gen.2,
