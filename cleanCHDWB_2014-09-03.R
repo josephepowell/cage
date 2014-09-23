@@ -46,9 +46,6 @@ RemoveIncomplete <- function(map) {
 exp.raw <- read.table(file = file.path(inpath, "chdwb_final_log2.txt"),
                        sep = "\t",
                     header = TRUE)
-info    <- read.table(file = file.path(inpath, "chdwb_final_exptdes.txt"),
-                       sep = "\t",
-                    header = TRUE)
 # Read ID map files
 map.1 <- read.csv(file.path(inpath, "genotypes/batch1_IDs.csv"), header = TRUE)
 map.1 <- RemoveIncomplete(map.1)
@@ -58,7 +55,8 @@ map.3 <- read.csv(file.path(inpath, "genotypes/batch3_IDs.csv"), header = TRUE)
 map.3 <- RemoveIncomplete(map.3)
 # Complete ID map resolves all ID associations
 map.new <- read.csv(file.path(inpath, "chdwb_all_design.csv"), header = TRUE)
-map.new$Sample <- gsub("GG2-", "GG2_", map.new$Sample) # subtle difference in ID
+map.new$Sample  <- gsub("GG2-", "GG2_", map.new$Sample) # subtle difference in ID
+map.new$CHD_ID  <- toupper(map.new$CHD_ID)
 # Correct formatting of IDs to match expression data
 map.2 <- FixIds(map.2)
 map.3 <- FixIds(map.3)
@@ -71,6 +69,18 @@ exp      <- exp[, which(colnames(exp) %in% map.new$Sample)]
 exp.col  <- map.new[which(map.new$Sample %in% colnames(exp)),1]
 colnames(exp) <- exp.col
 exp      <- cbind(PROBE_ID, exp)
+#------------------------------### Metadata ###-------------------------------
+info    <- read.table(file = file.path(inpath, "chdwb_final_exptdes.txt"),
+                       sep = "\t",
+                    header = TRUE)
+info$ColumnName <- map.new$CHD_ID
+colnames(info)  <- c("SAMPLE_ID", toupper(colnames(info)[-1]))
+cov <- read.csv(file = file.path(inpath, "sample_info_CHDWB.csv"),
+              header = TRUE)
+# move sample ID to first column
+col <- grep("CHDWB", names(cov))
+cov <- cov[, c(col, (1:ncol(cov))[-col])]
+colnames(cov) <- c("SAMPLE_ID", toupper(colnames(cov)[-1]))
 #---------------------------### Genotype data ###-----------------------------
 plink.2 <- read.plink(file.path(inpath, "genotypes/batch2"))
 plink.3 <- read.plink(file.path(inpath, "genotypes/batch3"))
@@ -103,13 +113,15 @@ fam.3$pedigree  <- names.3
 fam.3$member    <- names.3
 rownames(fam.3) <- names.3
 #----------------------------### Write to file ###------------------------------
-Write(exp, "CHDWB_exp.txt")
-write.plink(file.base = file.path(outpath, "CHDWB_phase1"),
+Write(exp, "CHDWB_exp-log2.txt")
+Write(info, "CHDWB_sample_info.txt")
+Write(cov, "CHDWB_cov.txt")
+write.plink(file.base = file.path(outpath, "CHDWB_batch2"),
             snp.major = TRUE,
                  snps = gen.2,
          subject.data = fam.2,
              snp.data = plink.2$map)
-write.plink(file.base = file.path(outpath, "CHDWB_phase2"),
+write.plink(file.base = file.path(outpath, "CHDWB_batch3"),
             snp.major = TRUE,
                  snps = gen.3,
          subject.data = fam.3,
