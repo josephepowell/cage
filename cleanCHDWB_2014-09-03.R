@@ -82,6 +82,8 @@ cov <- read.csv(file = file.path(inpath, "sample_info_CHDWB.csv"),
 col <- grep("CHDWB", names(cov)) # move sample ID to first column
 cov <- cov[, c(col, (1:ncol(cov))[-col])]
 colnames(cov) <- c("SAMPLE_ID", toupper(colnames(cov)[-1]))
+cov$SAMPLE_ID <- gsub("WB", "", cov$SAMPLE_ID)
+cov <- cov[which(cov$SAMPLE_ID %in% exp$SAMPLE_ID), ]
 # probe info
 probe <- read.table(file = file.path(inpath, "CHDWB_probe_info.txt"),
                      sep = "\t",
