@@ -68,6 +68,7 @@ cov <- cov[which(cov$STUDY_ID %in% c(colnames(exp.1), colnames(exp.2))), ]
 # TODO: remove unnecessary columns
 cov <- cov[, -c(1,3)]
 # TODO: re-label columns for consistency across datasets
+colnames(cov)[1] <- "SAMPLE_ID"
 #------------------------------### Cleanup ###----------------------------------
 names <- gen.id[which(gen.id %in% exp.id)]
 exp.1 <- exp.1[, names]           # only keep samples found in exp and gen data
