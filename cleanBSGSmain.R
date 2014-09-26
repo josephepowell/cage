@@ -93,13 +93,13 @@ phen  <- phen[-cols, ]
 #----------------------------### Write to file ###------------------------------
 if (all(colnames(exp)[-1] == colnames(gen)[-1]) &&
     all(colnames(exp)[-1] == phen[ ,1])) {
-    Write(exp, "BSGSmain_expression_signals.txt")
-    Write(exp.meta, "BSGSmain_expression_signals-meta.txt")
-    Write(exp.p, "BSGSmain_expression_signals-pval.txt")
-    Write(phen, "BSGSmain_phenotypes.txt")
+    Write(exp, "BSGSmain_exp.txt")
+    Write(exp.meta, "BSGSmain_probe_info.txt")
+    Write(exp.p, "BSGSmain_exp_pval.txt")
+    Write(phen, "BSGSmain_sample_info.txt")
     Write(info, "BSGSmain_process_info.txt")
-    Write(gen, "genotypes/BSGSmain_genotypes.txt")
-    Write(gen.meta, "genotypes/BSGSmain_genotypes-meta.txt")
+    Write(gen, "genotypes/BSGSmain_gen.txt")
+    Write(gen.meta, "genotypes/BSGSmain_gen_map.txt")
 } else {
     print("Error: Sample labelling is inconsistent between matrices.")
 }
