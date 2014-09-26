@@ -66,6 +66,7 @@ colnames(exp.2) <- gsub("\\.", "_", colnames(exp.2))
 colnames(exp.2) <- cov[which(cov$ColumnName %in% colnames(exp.2)),"STUDY_ID"]
 cov <- cov[which(cov$STUDY_ID %in% c(colnames(exp.1), colnames(exp.2))), ]
 # TODO: remove unnecessary columns
+cov <- cov[, -c(1,3)]
 # TODO: re-label columns for consistency across datasets
 #------------------------------### Cleanup ###----------------------------------
 names <- gen.id[which(gen.id %in% exp.id)]
