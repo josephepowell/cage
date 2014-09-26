@@ -64,6 +64,7 @@ exp.2 <- exp.raw.2[, -1]
 colnames(exp.2) <- gsub("\\.[A-Z]*_[A-z]*", "", colnames(exp.2))
 colnames(exp.2) <- gsub("\\.", "_", colnames(exp.2))
 colnames(exp.2) <- cov[which(cov$ColumnName %in% colnames(exp.2)),"STUDY_ID"]
+cov <- cov[which(cov$STUDY_ID %in% c(colnames(exp.1), colnames(exp.2))), ]
 # TODO: remove unnecessary columns
 # TODO: re-label columns for consistency across datasets
 #------------------------------### Cleanup ###----------------------------------
