@@ -138,14 +138,14 @@ if (all(colnames(exp.1)[-1] == colnames(gen.1)[-1]) &&
   all(colnames(exp.2)[-1] == colnames(gen.2)[-1]) &&
   all(colnames(exp.1)[-1] == phen.1[ ,1])         &&
   all(colnames(exp.2)[-1] == phen.2[ ,1])) {
-  Write(exp.1, "BSGSpilot_expression_signals-LCL.txt")
-  Write(exp.2, "BSGSpilot_expression_signals-PBMC.txt")
-  Write(phen.1, "BSGSpilot_phenotypes-LCL.txt")
-  Write(phen.2, "BSGSpilot_phenotypes-PBMC.txt")
-  Write(gen.1, "BSGSpilot_genotypes-LCL.txt")
-  Write(gen.2, "BSGSpilot_genotypes-PBMC.txt")
-  Write(gen.meta.1, "BSGSpilot_genotypes-meta-LCL.txt")
-  Write(gen.meta.2, "BSGSpilot_genotypes-meta-PBMC.txt")
+  Write(exp.1, "BSGSpilot_exp_LCL.txt")
+  Write(exp.2, "BSGSpilot_exp_PBMC.txt")
+  Write(phen.1, "BSGSpilot_sample_info_LCL.txt")
+  Write(phen.2, "BSGSpilot_sample_info_PBMC.txt")
+  Write(gen.1, "BSGSpilot_gen_LCL.txt")
+  Write(gen.2, "BSGSpilot_gen_PBMC.txt")
+  Write(gen.meta.1, "BSGSpilot_gen_map_LCL.txt")
+  Write(gen.meta.2, "BSGSpilot_gen_map_PBMC.txt")
 } else {
   print("Error: Sample labelling is inconsistent between matrices.")
 }
