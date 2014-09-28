@@ -121,7 +121,7 @@ fam.3$pedigree  <- names.3
 fam.3$member    <- names.3
 rownames(fam.3) <- names.3
 #----------------------------### Write to file ###------------------------------
-Write(exp, "CHDWB_exp-log2.txt")
+Write(exp, "CHDWB_exp_log2.txt")
 Write(cov, "CHDWB_cov.txt")
 Write(info, "CHDWB_sample_info.txt")
 Write(probe, "CHDWB_probe_info.txt")

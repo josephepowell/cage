@@ -130,7 +130,7 @@ for (i in 1:ceiling((length(gen.files) - 3) / 2)) {
                   rep("0", nrow(map)))
   #--------------------------### Write to file ###------------------------------
   Write(gen, paste0("genotypes/MuTHER_gen_", chrom, ".txt"))
-  Write(gen.post, paste0("genotypes/MuTHER_gen_", chrom, "_posteriors.txt"))
+  Write(gen.post, paste0("genotypes/posteriors/MuTHER_gen_post_", chrom, ".txt"))
   write.table(ped, paste0(outpath, "/genotypes/plink/MuTHER_", chrom, ".ped"),
               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE, col.names = FALSE)
   write.table(map, paste0(outpath, "/genotypes/plink/MuTHER_", chrom, ".map"),
