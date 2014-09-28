@@ -6,9 +6,9 @@
 require(snpStats)
 inpath  <- "/ibscratch/wrayvisscher/xander/CAGE/data/BSGSmain/raw"
 outpath <- "/ibscratch/wrayvisscher/xander/CAGE/data/BSGSmain/clean"
-# Read "raw" data
-load(file.path(inpath, "Pre_normalisation_data.Rdata"))
+load(file.path(inpath, "Pre_normalisation_data.Rdata")) # read "raw" data
 source("/clusterdata/uqahollo/scripts/Write.R")
+source("/clusterdata/uqahollo/scripts/ConvertToDosage.R")
 #---------------------------### Expression data ###-----------------------------
 # Rename and sort existing data structures
 exp   <- probe_signal
@@ -36,19 +36,19 @@ cov <- cov[order(cov[, 1]), ]
 info <- process_info
 colnames(info)[c(3,4)] <- c("PROCESS_DATE", "RNA_EXTRACT_DATE")
 #----------------------------### Genotype data ###------------------------------
-# Read raw genotype data
-gen.raw <- read.plink(file.path(inpath, "clean_geno_final.bed"))
-gen     <- gen.raw$genotypes
+gen.plink <- read.plink(file.path(inpath, "clean_geno_final.bed"))
+gen       <- ConvertToDosage(gen.plink)
+#gen       <- gen.plink$genotypes
 # Encode genotypes as a number between 1 and 3 and remove null values
-gen <- apply(gen@.Data, 2, as.numeric)
-gen[gen == 0] <- NA
+#gen <- apply(gen@.Data, 2, as.numeric)
+#gen[gen == 0] <- NA
 # Transpose genotype matrix for consistency between datasets
-gen <- t(gen)
+#gen <- t(gen)
 # Extract SNP and sample IDs
-RS_ID     <- colnames(gen.raw$genotypes)
-SAMPLE_ID <- gen.raw$fam[, 2]
+RS_ID     <- colnames(gen.plink$genotypes)
+SAMPLE_ID <- gen.plink$fam[, 2]
 # Metadata
-gen.map <- gen.raw$map
+gen.map <- gen.plink$map
 rownames(gen.map) <- c(1:nrow(gen.map))
 gen.map <- cbind(RS_ID, gen.map[, -c(2,3)])
 # Resolve allele IDs to nucleotide bases
