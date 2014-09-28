@@ -92,7 +92,7 @@ for (i in 1:ceiling((length(gen.files) - 3) / 2)) {
   gen.flat <- vapply(split(gen.flat, ceiling(1:length(gen.flat) / 3)),
                      which.max,
                      -1,
-                     USE.NAMES=FALSE)
+                     USE.NAMES = FALSE)
   # Convert maximum indices back to SNP labels
   gen.res <- matrix(gen.flat,
                     byrow = TRUE,
@@ -116,7 +116,7 @@ for (i in 1:ceiling((length(gen.files) - 3) / 2)) {
   gen <- cbind(gen.raw[, 2], gen)
   colnames(gen)[1] <- "RS_ID"
   gen <- gen[order(gen[, 1]), ]
-  #-----------------------### Format PLINK files ###--------------------
+  #-----------------------### Format PLINK files ###----------------------------
   ped <- matrix(nrow = ncol(gen) - 1, ncol = 6 + nrow(gen))
   for (i in 1:ncol(gen) - 1) {
     ped[i,1:6] <- c("", colnames(gen)[i + 1], "0", "0", "0", "0")
@@ -128,12 +128,12 @@ for (i in 1:ceiling((length(gen.files) - 3) / 2)) {
                   gen[, 1],
                   rep("0", nrow(map)),
                   rep("0", nrow(map)))
-  #--------------------------### Write to file ###----------------------
-  Write(gen, paste0("genotypes/MuTHER_genotypes-", chrom, ".txt"))
-  Write(gen.post, paste0("genotypes/MuTHER_genotypes-", chrom, "-posteriors.txt"))
-  write.table(ped, paste0(outpath, "/genotypes/plink/MuTHER-", chrom, ".ped"),
+  #--------------------------### Write to file ###------------------------------
+  Write(gen, paste0("genotypes/MuTHER_gen_", chrom, ".txt"))
+  Write(gen.post, paste0("genotypes/MuTHER_gen_", chrom, "_posteriors.txt"))
+  write.table(ped, paste0(outpath, "/genotypes/plink/MuTHER_", chrom, ".ped"),
               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE, col.names = FALSE)
-  write.table(map, paste0(outpath, "/genotypes/plink/MuTHER-", chrom, ".map"),
+  write.table(map, paste0(outpath, "/genotypes/plink/MuTHER_", chrom, ".map"),
               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE, col.names = FALSE)
 }
 
