@@ -27,24 +27,17 @@ names <- gsub("(X|\\..*)", "", colnames(exp.p))
 colnames(exp.p) <- names
 exp.p <- exp.p[, order(colnames(exp.p))]
 exp.p <- cbind(PROBE_ID, exp.p)
-#---------------------------### Phenotype data ###------------------------------
-cov <- sample_info
+#-----------------------------### Covariates ###--------------------------------
+cov  <- sample_info
 colnames(cov) <- gsub("\\.", "_", colnames(cov))
 colnames(cov) <- sapply(colnames(cov), toupper)
-cov <- cov[order(cov[, 1]), ]
-#----------------------------### Process info ###-------------------------------
+cov  <- cov[order(cov[, 1]), ]
 info <- process_info
 colnames(info)[c(3, 4)] <- c("PROCESS_DATE", "RNA_EXTRACT_DATE")
 #----------------------------### Genotype data ###------------------------------
 gen.plink <- read.plink(file.path(inpath, "clean_geno_final.bed"))
 gen       <- ConvertToDosage(gen.plink)
 gen       <- gen + 1 # add 1 to index alleles correctly
-#gen       <- gen.plink$genotypes
-# Encode genotypes as a number between 1 and 3 and remove null values
-#gen <- apply(gen@.Data, 2, as.numeric)
-#gen[gen == 0] <- NA
-# Transpose genotype matrix for consistency between datasets
-#gen <- t(gen)
 # Extract SNP and sample IDs
 RS_ID     <- colnames(gen.plink$genotypes)
 SAMPLE_ID <- gen.plink$fam[, 2]
@@ -64,7 +57,6 @@ for (i in 1:nrow(gen.map)) {
                     paste0(gen.map[i, 4], gen.map[i, 5]),
                     paste0(gen.map[i, 5], gen.map[i, 5]))
 }
-
 # Encode genotypes using allele combinations
 gen.res <- matrix(nrow = nrow(gen),
                   ncol = ncol(gen))
@@ -94,8 +86,8 @@ Write(info, "BSGSmain_process_info.txt")
 Write(gen, "genotypes/BSGSmain_gen.txt")
 Write(gen.map, "genotypes/BSGSmain_gen_map.txt")
 # Copy PLINK files to clean directory
-system(paste0("cp ", file.path(inpath, "*.bed "), file.path(outpath, "genotypes/BSGSmain.bed")))
-system(paste0("cp ", file.path(inpath, "*.bim "), file.path(outpath, "genotypes/BSGSmain.bim")))
+system(paste0("cp ", file.path(inpath, "*.bed "), file.path(outpath, "genotypes/plink/BSGSmain.bed")))
+system(paste0("cp ", file.path(inpath, "*.bim "), file.path(outpath, "genotypes/plink/BSGSmain.bim")))
 #------------------------------### Clean up ###---------------------------------
 rm(inpath, outpath, PROBE_ID, RS_ID, SAMPLE_ID, cols, names, probe_info, probe_pval,
-   probe_signal, process_info, sample_info, gen.res, alleles, labels, i, write)
+   probe_signal, process_info, sample_info, gen.res, alleles, labels, i)
