@@ -18,7 +18,7 @@ exp   <- exp[, order(colnames(exp))]
 PROBE_ID <- probe_info[, 3]
 exp   <- cbind(PROBE_ID, exp)
 # Metadata
-probe.info <- cbind(probe_info[, c(3,2,4:length(probe_info))])
+probe.info <- cbind(probe_info[, c(3, 2, 4:length(probe_info))])
 colnames(probe.info)[6] <- "RS_ID"
 colnames(probe.info) <- sapply(colnames(probe.info), toupper)
 # p-values
@@ -34,10 +34,11 @@ colnames(cov) <- sapply(colnames(cov), toupper)
 cov <- cov[order(cov[, 1]), ]
 #----------------------------### Process info ###-------------------------------
 info <- process_info
-colnames(info)[c(3,4)] <- c("PROCESS_DATE", "RNA_EXTRACT_DATE")
+colnames(info)[c(3, 4)] <- c("PROCESS_DATE", "RNA_EXTRACT_DATE")
 #----------------------------### Genotype data ###------------------------------
 gen.plink <- read.plink(file.path(inpath, "clean_geno_final.bed"))
 gen       <- ConvertToDosage(gen.plink)
+gen       <- gen + 1 # add 1 to index alleles correctly
 #gen       <- gen.plink$genotypes
 # Encode genotypes as a number between 1 and 3 and remove null values
 #gen <- apply(gen@.Data, 2, as.numeric)
@@ -50,7 +51,7 @@ SAMPLE_ID <- gen.plink$fam[, 2]
 # Metadata
 gen.map <- gen.plink$map
 rownames(gen.map) <- c(1:nrow(gen.map))
-gen.map <- cbind(RS_ID, gen.map[, -c(2,3)])
+gen.map <- cbind(RS_ID, gen.map[, -c(2, 3)])
 # Resolve allele IDs to nucleotide bases
 labels       <- c("A", "C", "G", "T")
 gen.map[, 4] <- labels[gen.map[, 4]]
