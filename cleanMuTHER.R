@@ -136,16 +136,15 @@ for (i in 1:ceiling((length(gen.files) - 3) / 2)) {
   write.table(map, paste0(outpath, "/genotypes/plink/MuTHER_", chrom, ".map"),
               sep = "\t", eol = "\n", quote = FALSE, row.names = FALSE, col.names = FALSE)
 }
-
 # TODO: Merge all PLINK files before write
 # system("bash ~/scripts/cage/plink/mergeMuTHER.sh")
 #----------------------------### Write to file ###------------------------------
-Write(exp.1, "MuTHER_exp_fat.txt")
-Write(exp.2, "MuTHER_exp_LCL.txt")
-Write(exp.3, "MuTHER_exp_skin.txt")
+Write(exp.1,  "MuTHER_exp_fat.txt")
+Write(exp.2,  "MuTHER_exp_LCL.txt")
+Write(exp.3,  "MuTHER_exp_skin.txt")
 Write(bead.1, "MuTHER_beads_fat.txt")
 Write(bead.2, "MuTHER_beads_LCL.txt")
 Write(bead.3, "MuTHER_beads_skin.txt")
 #------------------------------### Clean up ###---------------------------------
 rm(inpath, outpath, ids, names, order, row, labels, gen.files, sequence,
-   i, j, chrom, times, alleles, gen.raw, gen.clean, gen.flat, gen.res, write)
+   i, j, chrom, times, alleles, gen.raw, gen.clean, gen.flat, gen.res, Write)
