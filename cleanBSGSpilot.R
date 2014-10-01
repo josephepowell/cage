@@ -140,6 +140,10 @@ Write(gen.2, "genotypes/BSGSpilot_gen_PBMC.txt")
 Write(map.1, "genotypes/BSGSpilot_gen_map_LCL.txt")
 Write(map.2, "genotypes/BSGSpilot_gen_map_PBMC.txt")
 # TODO: copy and rename PLINK files in clean directory
+#system(paste0("bash for file in ", inpath, "/cleaned_geno_lcl.*
+#do
+#  cp '$file' 'test/BSGSpilot_LCL.${file#*.}'\n
+#done"))
 #------------------------------### Clean up ###---------------------------------
 rm(inpath, outpath, PROBE_ID, names, plink.1, plink.2, gen.res, alleles,
    labels, RS_ID, SAMPLE_ID, cols, i, Write)
