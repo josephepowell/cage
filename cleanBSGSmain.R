@@ -33,7 +33,7 @@ colnames(cov) <- gsub("\\.", "_", colnames(cov))
 colnames(cov) <- sapply(colnames(cov), toupper)
 cov  <- cov[order(cov[, 1]), ]
 info <- process_info
-colnames(info)[c(3, 4)] <- c("PROCESS_DATE", "RNA_EXTRACT_DATE")
+colnames(info)[c(1, 3, 4)] <- c("SAMPLE_ID", "PROCESS_DATE", "RNA_EXTRACT_DATE")
 #----------------------------### Genotype data ###------------------------------
 gen.plink <- read.plink(file.path(inpath, "clean_geno_final.bed"))
 gen       <- ConvertToDosage(gen.plink)
@@ -77,6 +77,7 @@ exp   <- exp[, -cols]
 exp.p <-  exp.p[, -cols]
 cols  <- cols - 1
 cov   <- cov[-cols, ]
+info  <- info[which(info$SAMPLE_ID %in% colnames(exp)), ]
 #----------------------------### Write to file ###------------------------------
 Write(exp, "BSGSmain_exp.txt")
 Write(exp.p, "BSGSmain_exp_pval.txt")
