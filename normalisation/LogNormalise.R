@@ -1,3 +1,8 @@
+#-------------------------------------------------------------------------------
+# File  : LogNormalise.R
+# Author: Alex Holloway
+# Date  : 29/09/2014
+#-------------------------------------------------------------------------------
 LogNormalise <- function(x, neg.rm = TRUE, row.names = TRUE) {
   # Log transform numerical data, ommitting NA values.
   #

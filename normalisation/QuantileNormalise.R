@@ -1,3 +1,8 @@
+#-------------------------------------------------------------------------------
+# File  : QuantileNormalise.R
+# Author: Alex Holloway
+# Date  : 30/09/2014
+#-------------------------------------------------------------------------------
 QuantileNormalise <- function(x) {
   # Perform quantile normalisation on numerical data using the Bioconductor
   # package `limma`.

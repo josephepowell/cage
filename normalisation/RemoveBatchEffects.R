@@ -1,3 +1,8 @@
+#-------------------------------------------------------------------------------
+# File  : RemoveBatchEffects.R
+# Author: Alex Holloway
+# Date  : 01/10/2014
+#-------------------------------------------------------------------------------
 RemoveBatchEffects <- function(exp, process.info, sample.info) {
   # Normalise gene expression data by accounting for various batch effects.
   #
@@ -21,8 +26,8 @@ RemoveBatchEffects <- function(exp, process.info, sample.info) {
 
   for (i in 1:nrow(exp)) {
     non.na <- array(!is.na(exp[i, ]))
-    if (all(non.na == FALSE)) {
-      exp.nrm[i, ] <- NA
+    if (length(which(non.na)) < 16) {  # arbitrary threshold for NAs, prevents
+      exp.nrm[i, ] <- NA               # error during model construction
       next
     }
 
