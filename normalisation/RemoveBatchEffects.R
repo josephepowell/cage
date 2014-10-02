@@ -45,7 +45,7 @@ RemoveBatchEffects <- function(exp, process.info, sample.info) {
   exp.nrm <- data.frame(exp.nrm)
   coef    <- data.frame(FIT_EST = coef[, 1],
                          FIT_R2 = coef[, 2],
-                     CORRECT R2 = coef[, 3])
+                     CORRECT_R2 = coef[, 3])
   out <- list(exp.nrm, coef)
   return(out)
 }
