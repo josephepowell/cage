@@ -11,16 +11,26 @@ RemoveBatchEffects <- function(exp, process.info, sample.info) {
   #   
   # TODO: add arguments for individual vectors of data
   # TODO: check dimensions of all inputs
-  # TODO: create data.frames to store results
-  exp     <- exp
-  prc.inf <- process.info
-  smp.inf <- sample.info
-  
-  ex.date <- as.factor(prc.inf$RNA_EXTRACT_DATE)
-  sen.id  <- as.factor(smp.inf$SENTRIX_ID)
-  sen.pos <- as.factor(smp.inf$SENTRIX_POSITION)
+  ex.date <- as.factor(process.info$RNA_EXTRACT_DATE)
+  sen.id  <- as.factor(sample.info$SENTRIX_ID)
+  sen.pos <- as.factor(sample.info$SENTRIX_POSITION)
 
-  mod <- lm(as.numeric(exp[1, ]) ~ sen.id + sen.pos + ex.date)
-  fit <- summary(mod)
-  # TODO: extract summary stats
+  exp.nrm <- matrix(nrow = nrow(exp),
+                    ncol = ncol(exp),
+                dimnames = dimnames(exp))
+
+  for (i in 1:nrow(exp)) {
+    non.na <- array(!is.na(exp[i, ]))
+    if (all(non.na == FALSE)) {
+      exp.nrm[i, ] <- NA
+      next
+    }
+
+    mod.1  <- lm(as.numeric(exp[i, ]) ~ sen.id + sen.pos + ex.date)
+    fit.1  <- summary(mod.1)
+    exp.nrm[i, non.na] <- fit.1$residuals
+  }
+
+  exp.nrm <- data.frame(exp.nrm)
+  return(exp.nrm)
 }
