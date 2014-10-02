@@ -13,7 +13,10 @@ RemoveBatchEffects <- function(exp, process.info, sample.info) {
   #   sample.info: individual sample data (i.e. Sentrix IDs and positions).
   #
   # Returns:
-  #   
+  #   list containing two data.frames:
+  #     1) expression levels, adjusted for batch effects.
+  #     2) coefficients resulting from regression on each probe.
+
   # TODO: add arguments for individual vectors of data
   # TODO: check dimensions of all inputs
   ex.date <- as.factor(process.info$RNA_EXTRACT_DATE)
