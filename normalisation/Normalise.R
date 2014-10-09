@@ -40,7 +40,7 @@ Normalise <- function(x,
     x  <- CorrectByPca(x, pc)
   }
   if (inv.norm) {
-    x <- apply(x, 1, InverseNormal)
+    x <- t(apply(x, 1, InverseNormal))  # apply over probes, requires transpose
   }
   return(x)
 }
