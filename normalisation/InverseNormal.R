@@ -12,6 +12,7 @@ InverseNormal <- function(x) {
   #
   # Returns:
   #   vector of numeric values, with range in 0 to 1.
-  x <- (x - min(x)) / (max(x) - min(x))
+  i <- which(!is.na(x))
+  x[i] <- (x[i] - min(x[i])) / (max(x[i]) - min(x[i]))
   return(x)
 }
