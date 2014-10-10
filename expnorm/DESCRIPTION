@@ -1,0 +1,9 @@
+Package: expnorm
+Type: Package
+Title: Normalisation of gene expression data
+Version: 1.0
+Date: 2014-10-10
+Author: Alex Holloway
+Maintainer: Alex Holloway <a.holloway@uq.edu.au>
+Description: Provides a number of functions used to normalise or otherwise transform numeric data. The normalisation strategies have been selected for common application to microarray gene expression data.
+License: GPL-2
