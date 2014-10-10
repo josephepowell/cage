@@ -12,9 +12,14 @@ InverseNormal <- function(x) {
   # Returns:
   #   vector of numeric values, transformed according to Blom (1958).
   c  <- 3 / 8  # arbitrary constant
-  i  <- which(!is.na(x))
+  i  <- !is.na(x)
   n  <- length(x)
-  zn <- x[i] - mean(x[i]) / sd(x[i])
+  zn <- (x[i] - mean(x[i])) / sd(x[i])
+  if (all(zn[!is.na(zn)] == 0)) {  # check for vectors containing only 0 or NA
+    x[i] <- zn
+    x[is.nan(x)] <- 0
+    return(x)
+  } 
   r  <- rank(zn[!is.na(zn)], ties.method = "average")
   nrm  <- qnorm((r - c) / (n - 2 * c + 1))
   x[i] <- nrm
