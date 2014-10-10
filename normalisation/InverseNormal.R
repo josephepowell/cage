@@ -4,15 +4,19 @@
 # Date  : 09/10/2014
 #-------------------------------------------------------------------------------
 InverseNormal <- function(x) {
-  # Transform the values in a vector to an inverse-normal distribution.
-  # i.e. scaled to have values between 0 and 1.
+  # Perform rank-based inverse normal transformation on a vector of values.
   #
   # Args:
   #   x: vector of numeric values.
   #
   # Returns:
-  #   vector of numeric values, with range in 0 to 1.
-  i <- which(!is.na(x))
-  x[i] <- (x[i] - min(x[i])) / (max(x[i]) - min(x[i]))
+  #   vector of numeric values, transformed according to Blom (1958).
+  c  <- 3 / 8  # arbitrary constant
+  i  <- which(!is.na(x))
+  n  <- length(x)
+  zn <- x[i] - mean(x[i]) / sd(x[i])
+  r  <- rank(zn[!is.na(zn)], ties.method = "average")
+  nrm  <- qnorm((r - c) / (n - 2 * c + 1))
+  x[i] <- nrm
   return(x)
 }
