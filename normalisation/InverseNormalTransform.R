@@ -3,7 +3,7 @@
 # Author: Alex Holloway
 # Date  : 09/10/2014
 #-------------------------------------------------------------------------------
-InverseNormal <- function(x) {
+InverseNormalTransform <- function(x) {
   # Perform rank-based inverse normal transformation on a vector of values.
   #
   # Args:
