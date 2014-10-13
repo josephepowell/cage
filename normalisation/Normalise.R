@@ -4,17 +4,16 @@
 # Date  : 09/10/2014
 #-------------------------------------------------------------------------------
 Normalise <- function(x,
-                      log = TRUE,
-                      quantile = TRUE,
-                      pca = TRUE,
-                      inv.norm = TRUE,
+                      log = FALSE,
+                      quantile = FALSE,
+                      pca = FALSE,
+                      inv.norm = FALSE,
                       n.pcs = 25,
                       neg.rm = TRUE,
-                      row.names = FALSE) {
+                      row.names = TRUE) {
   # Perform end-to-end normalisation of gene expression data, through log2 
   # transformation, quantile normalisation, inverse normal transformation, 
-  # and principal components analysis. By default, all normalisations are 
-  # performed.
+  # and principal components analysis.
   #
   # Args:
   #   x: matrix or data.frame of expression data to be normalised.
@@ -29,7 +28,7 @@ Normalise <- function(x,
   #  Returns:
   #    data.frame of gene expression data, normalised according to selected arguments.
   if (log) {
-    x <- LogNormalise(x, neg.rm, row.names)
+    x <- LogTransform(x, neg.rm, row.names)
   }
   if (quantile) {
     x <- QuantileNormalise(x, row.names)
@@ -40,7 +39,7 @@ Normalise <- function(x,
     x  <- CorrectByPca(x, pc)
   }
   if (inv.norm) {
-    x <- t(apply(x, 1, InverseNormal))  # apply over probes, requires transpose
+    x <- t(apply(x, 1, InverseNormalTransform))  # apply over probes, requires transpose
   }
   return(x)
 }
