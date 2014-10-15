@@ -8,9 +8,9 @@ Normalise <- function(x,
                       quantile = FALSE,
                       pca = FALSE,
                       inv.norm = FALSE,
+                      n.pcs = 25,
                       neg.rm = TRUE,
-                      row.names = TRUE,
-                      ...) {
+                      row.names = TRUE) {
   # Perform end-to-end normalisation of gene expression data, through log2 
   # transformation, quantile normalisation, inverse normal transformation, 
   # and principal components analysis.
@@ -37,6 +37,8 @@ Normalise <- function(x,
     x  <- x[apply(x, 1, function(x) all(is.na(x))), ]
     pc <- ppca(t(x), n.pcs)
     x  <- CorrectByPca(x, pc)
+  } else {
+    n.pcs <- 0
   }
   if (inv.norm) {
     x <- t(apply(x, 1, InverseNormalTransform))  # apply over probes, requires transpose
