@@ -3,12 +3,12 @@
 # Author: Alex Holloway
 # Date  : 08/10/2014
 #-------------------------------------------------------------------------------
-CorrectByPca <- function(exp, pca) {
+CorrectByPca <- function(exp, n.pcs) {
   # Attempt to remove batch processing effects using principal components.
   #
   # Args:
   #   exp: expression data.
-  #   pca: `pcaRes` object, returned by `ppca` function in `pcaMethods` package.
+  #   n.pcs: number of principal components to perform analysis with.
   #
   # Returns:
   #   data.frame of expression levels, adjusted for principal component scores.
@@ -16,7 +16,7 @@ CorrectByPca <- function(exp, pca) {
   exp.nrm <- matrix(nrow = nrow(exp),
                     ncol = ncol(exp),
                 dimnames = dimnames(exp))
-
+  pca <- ppca(t(exp), n.pcs)
   for (i in 1:nrow(exp)) {
     non.na <- array(!is.na(exp[i, ]))
     if (length(which(non.na)) < 16) {  # arbitrary threshold for NAs, prevents
