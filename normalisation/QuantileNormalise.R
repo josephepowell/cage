@@ -13,15 +13,16 @@ QuantileNormalise <- function(x, row.names = FALSE) {
   #
   # Returns:
   #   data.frame of numeric values, normalised across chips.
-  stopifnot(require("limma")) # hard check for requisite package
-  x <- as.matrix(x)           # convert data to matrix
-  if (!all(x[which(!is.na(x))] >= 0)) {
-    stop("\n  x contains negative values. Perform log normalisation.")
-  }
+  stopifnot(require("limma"))  # hard check for requisite package
 
   if (row.names) {
     rownames(x) <- x[, 1]  # move column of character entries to row.names
-    x           <- x[, -1] # strip character column
+    x           <- x[, -1]  # strip character column
+  }
+
+  x <- as.matrix(x)  # convert data to matrix
+  if (!all(x[which(!is.na(x))] >= 0)) {
+    stop("\n  x contains negative values. Perform log normalisation.")
   }
 
   x <- normalizeBetweenArrays(x)
